@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Latin Reader Web App</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .gloss {
+      cursor: pointer;
+      color: blue;
+      text-decoration: underline;
+    }
+    select, label {
+      margin-right: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Latin Reader</h1>
+  <div>
+    <select id="levelSelect">
+      <option value="beginner">Beginner</option>
+      <option value="intermediate">Intermediate</option>
+      <option value="advanced">Advanced</option>
+    </select>
+    <label>
+      <input type="checkbox" id="toggleGlosses" checked /> Show Glosses
+    </label>
+  </div>
+  <h2 id="title"></h2>
+  <p id="text"></p>
+
+  <script>
+    const samples = {
+      beginner: {
+        title: "The Lion and the Mouse",
+        text: "Leo in silva dormiebat. Mus parvus super leonem cucurrit. Leo excitatus est, sed murem non comedit. Postea leo in rete captus est. Mus leonem liberavit.",
+        glosses: {
+          dormiebat: "was sleeping (imperfect)",
+          rete: "net",
+          liberavit: "freed (perfect)"
+        }
+      },
+      intermediate: {
+        title: "A Visit to the Forum",
+        text: "Marcus cum patre ad forum ambulavit. Multos homines vidit: mercatores, oratores, et servos. Pater Marcum docuit quid emere et vendere significet.",
+        glosses: {
+          mercatores: "merchants",
+          significet: "means (subjunctive, indirect question)"
+        }
+      },
+      advanced: {
+        title: "The Founding of Rome",
+        text: "Romulus et Remus, filii Rhea Silviae, urbem condiderunt. Postquam Remus a fratre interfectus est, Romulus solus regnavit.",
+        glosses: {
+          condiderunt: "founded (perfect)",
+          "interfectus": "was killed (perfect passive)",
+          regnavit: "ruled (perfect)"
+        }
+      }
+    };
+
+    const levelSelect = document.getElementById("levelSelect");
+    const toggleGlosses = document.getElementById("toggleGlosses");
+    const titleEl = document.getElementById("title");
+    const textEl = document.getElementById("text");
+
+    function render() {
+      const level = levelSelect.value;
+      const data = samples[level];
+      const showGlosses = toggleGlosses.checked;
+
+      titleEl.textContent = data.title;
+      textEl.innerHTML = "";
+
+      data.text.split(" ").forEach((word) => {
+        const clean = word.replace(/[^a-zA-Z]/g, '').toLowerCase();
+        const span = document.createElement("span");
+        span.textContent = word + " ";
+
+        if (data.glosses[clean] && showGlosses) {
+          span.className = "gloss";
+          span.onclick = () => alert(`${word}: ${data.glosses[clean]}`);
+        }
+
+        textEl.appendChild(span);
+      });
+    }
+
+    levelSelect.addEventListener("change", render);
+    toggleGlosses.addEventListener("change", render);
+    render();
+  </script>
+</body>
+</html>
